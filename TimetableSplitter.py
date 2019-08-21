@@ -3,7 +3,7 @@
 # MIS Timetable Splitter
 #
 # Split a combined HTML exported Student Timetable from a common Management
-# Information System (MIS) product that shall remain nameless into individual
+# Information System (MIS) product, that shall remain nameless, into individual
 # per-student files.
 #
 #
@@ -38,7 +38,7 @@ class TimetableParser(HTMLParser):
         
 
 # argument parsing
-argparser = argparse.ArgumentParser(description='Split a combined HTML exported Student Timetable from a common Management Information System (MIS) product that shall remain nameless into individual per-student files.')
+argparser = argparse.ArgumentParser(description='Split a combined HTML exported Student Timetable from a common Management Information System (MIS) product, that shall remain nameless, into individual per-student files.')
 argparser.add_argument('-i', '--input', dest='inputfile', help='The input HTML file.', required=True, type=argparse.FileType('r'))
 argparser.add_argument('-o', '--output',dest='outputpath', help='The directory for the output files', required=True)
 
@@ -57,7 +57,14 @@ for i in range(0, len(tt_parser.splitpoints)):
     currentsplit = tt_parser.splitpoints[i]
     currentline = lines[currentsplit[0]-1]
     
-    nextsplit = tt_parser.splitpoints[i+1]
+    try:
+        nextsplit = tt_parser.splitpoints[i+1]
+    except IndexError:
+        # at the end of the loop, simply split from the current split point to the end of the line
+        nextsplit = (currentsplit[0]-1, len(currentline))
     
-    with open(os.path.join(args.outputpath, tt_parser.titles[i] + '.html'), 'w') as outputfile:
+    individual_tt_filename = os.path.join(args.outputpath, tt_parser.titles[i] + '.html')
+    with open(individual_tt_filename, 'w') as outputfile:
+        print("Writing " + individual_tt_filename)
         outputfile.write(currentline[currentsplit[1]:nextsplit[1]])
+        # now we need to clean up that HTML... :(
