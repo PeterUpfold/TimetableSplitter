@@ -11,6 +11,7 @@
 from html.parser import HTMLParser
 import argparse
 import re
+import os
 
 
 class TimetableParser(HTMLParser):
@@ -20,14 +21,10 @@ class TimetableParser(HTMLParser):
         super().__init__()
         self.tt_regex = re.compile(r'Timetable\s*')
         self.splitpoints = []
+        self.titles = []
 
     def handle_starttag(self, tag, attrs):
-        #print("Start tag", tag)
         pass
-        # if tag == 'td' and ('class', 'TableBorder') in attrs:
-        #     # a new timetable begins -- dump any previous one to disk
-        #     print(self.get_starttag_text())
-                        
     
     def handle_endtag(self, tag):
         #print("End tag", tag)
@@ -36,6 +33,8 @@ class TimetableParser(HTMLParser):
     def handle_data(self, data):
         if self.tt_regex.match(data):
             print("MATCH at " + str(self.getpos()[0]) + "," + str(self.getpos()[1]))
+            self.splitpoints.append(self.getpos())
+            self.titles.append(data)
         
 
 # argument parsing
@@ -50,5 +49,15 @@ tt_parser = TimetableParser()
 
 tt_parser.feed(args.inputfile.read())
 
-for splitpoint in tt_parser.splitpoints:
-    print(splitpoint)
+# with identified split points, split file into individual items??
+args.inputfile.seek(0)
+lines = args.inputfile.readlines()
+
+for i in range(0, len(tt_parser.splitpoints)):
+    currentsplit = tt_parser.splitpoints[i]
+    currentline = lines[currentsplit[0]-1]
+    
+    nextsplit = tt_parser.splitpoints[i+1]
+    
+    with open(os.path.join(args.outputpath, tt_parser.titles[i] + '.html'), 'w') as outputfile:
+        outputfile.write(currentline[currentsplit[1]:nextsplit[1]])
