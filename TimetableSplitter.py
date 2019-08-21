@@ -98,10 +98,10 @@ for i in range(0, len(tt_parser.splitpoints)):
         # write header
         outputfile.write('<html><head><title>' + tt_parser.titles[i] + '</title>')
 
-        # write the style tags
-        outputfile.write('<style type="text/css">')
-        outputfile.write(tt_parser.style_data)
-        outputfile.write('</style>')
+        # write the style tags -- disabled at the moment because WP strips inline style in post body
+        #outputfile.write('<style type="text/css">')
+        #outputfile.write(tt_parser.style_data)
+        #outputfile.write('</style>')
 
         outputfile.write('</head><body>')
 
