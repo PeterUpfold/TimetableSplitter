@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["--input", "C:\\Users\\upfoldp\\AppData\\Local\\Temp\\rpttmp.html", "--output", "C:\\Users\\upfoldp\\AppData\\Local\\Temp\\reports"]
+            "args": ["--input", "C:\\Users\\upfoldp\\AppData\\Local\\Temp\\rpttmp.html", "--output", "C:\\Users\\upfoldp\\AppData\\Local\\Temp\\reports", "--force"]
         }
     ]
 }
